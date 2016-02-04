@@ -3,12 +3,14 @@ package ts.app.sagosoft.com.libcraft;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.j256.ormlite.dao.Dao;
 import com.squareup.otto.Subscribe;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,18 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+        String s="{\"type\":\"has_new_msg\",\"data\":{\"user_msg_flag\":1}}";
+        try {
+            byte[] b = s.getBytes("utf-8");
+            StringBuilder sb=new StringBuilder();
+            for (int i=0;i<b.length;i++){
+                sb.append(",");
+                sb.append(b[i]);
+            }
+            Log.i("MainActivity",sb.toString());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -86,9 +100,7 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.button_toast)
     public void onClickToastEvent(View view) {
-        Intent intent = new Intent();
-        intent.setClass(MainActivity.this, MainActivity.class);
-        uITopToast.build(MainActivity.this, intent, "http://7teb43.com2.z0.glb.qiniucdn.com/FlqdfHWM8F9pyBtMf_gzMh4kFgdt", "title", "content")
+        uITopToast.build(MainActivity.this, null, "http://7teb43.com2.z0.glb.qiniucdn.com/FlqdfHWM8F9pyBtMf_gzMh4kFgdt", "title", "content")
                 .showWithAnimation().hideWithMills(0);
 
     }

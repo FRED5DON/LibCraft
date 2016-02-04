@@ -8,10 +8,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -46,8 +50,68 @@ public class UINoticeViewBuilder {
     private boolean outofCtrl = false;
     private long real_notice_duration = IOS_NOTICE_DURATION;
 
-    private UINoticeViewBuilder() {
+    private UINoticeFrame showFrame;
+    private UINoticeFrame hideFrame;
 
+    public UINoticeFrame getHideFrame() {
+        return hideFrame;
+    }
+
+    public void setHideFrame(UINoticeFrame hideFrame) {
+        this.hideFrame = hideFrame;
+    }
+
+    public UINoticeFrame getShowFrame() {
+        return showFrame;
+    }
+
+    public void setShowFrame(UINoticeFrame showFrame) {
+        this.showFrame = showFrame;
+    }
+
+    class UINoticeFrame {
+        public float fromX;
+        public float fromY;
+        public float toX;
+        public float toY;
+
+        public boolean isRandom = false;
+
+        private final int num = 4;
+
+        public void setFrame(float fromX, float fromY, float toX, float toY) {
+            this.fromX = fromX;
+            this.fromY = fromY;
+            this.toX = toX;
+            this.toY = toY;
+        }
+
+        public void setFrameWithFrame(float[] frame) {
+            if (frame != null && frame.length == num) {
+                setFrame(frame[0], frame[1], frame[2], frame[3]);
+            }
+
+        }
+
+        public float[] mkRandomFrame() {
+            if (!isRandom) {
+                return null;
+            }
+            float[] frame = new float[num];
+            int ran = new Random().nextInt(num);
+            frame[ran] = -1F * (ran % 2 == 0 ? 1F : -1F);
+            return frame;
+        }
+    }
+
+
+    private UINoticeViewBuilder() {
+        showFrame = new UINoticeFrame();
+        showFrame.fromY = -1F;
+        showFrame.toX = showFrame.toY = showFrame.fromX = 0;
+        hideFrame = new UINoticeFrame();
+        hideFrame.toY = -1F;
+        hideFrame.toX = hideFrame.fromY = hideFrame.fromX = 0;
     }
 
     public static UINoticeViewBuilder getInstance() {
@@ -63,7 +127,7 @@ public class UINoticeViewBuilder {
      * 当启动新的Activity时（并且没有使用者持有msgView）建议先调用此方法
      */
     public void uninstall() {
-        if(msgView!=null ){
+        if (msgView != null) {
             ((ViewGroup) msgView.getParent()).removeView(msgView);
         }
     }
@@ -198,7 +262,7 @@ public class UINoticeViewBuilder {
         }
         this.msgView = LayoutInflater.from(context).inflate(R.layout.top_toast, null);
         childrenView = new ViewHolder(msgView);
-        Log.d("TAG", "on1: "+msgView);
+        Log.d("TAG", "on1: " + msgView);
         ViewGroup.LayoutParams layoutparams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         context.getWindow().addContentView(msgView, layoutparams);
         Log.d("TAG", "on2: " + msgView);
@@ -270,11 +334,12 @@ public class UINoticeViewBuilder {
      * 显示顶部toast
      */
     public synchronized UINoticeViewBuilder showWithAnimation() {
+        showFrame.setFrameWithFrame(showFrame.mkRandomFrame());
         TranslateAnimation animation = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0f,
-                Animation.RELATIVE_TO_SELF, 0f,
-                Animation.RELATIVE_TO_SELF, -1f,
-                Animation.RELATIVE_TO_SELF, 0f
+                Animation.RELATIVE_TO_SELF, showFrame.fromX,
+                Animation.RELATIVE_TO_SELF, showFrame.toX,
+                Animation.RELATIVE_TO_SELF, showFrame.fromY,
+                Animation.RELATIVE_TO_SELF, showFrame.toY
         );
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -297,9 +362,14 @@ public class UINoticeViewBuilder {
             public void onAnimationRepeat(Animation animation) {
             }
         });
-        animation.setDuration(DURATION_IN);
-        animation.setFillAfter(true);
-        msgView.startAnimation(animation);
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0.5F, 1F);
+        AnimationSet set = new AnimationSet(true);
+        set.addAnimation(animation);
+        set.addAnimation(alphaAnimation);
+
+        set.setDuration(DURATION_IN);
+        set.setFillAfter(true);
+        msgView.startAnimation(set);
         return uITopToast;
     }
 
@@ -311,11 +381,12 @@ public class UINoticeViewBuilder {
         if (msgView.getVisibility() == View.GONE) {
             return;
         }
+        hideFrame.setFrameWithFrame(showFrame.mkRandomFrame());
         TranslateAnimation animation = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0f,
-                Animation.RELATIVE_TO_SELF, 0f,
-                Animation.RELATIVE_TO_SELF, 0f,
-                Animation.RELATIVE_TO_SELF, -1f
+                Animation.RELATIVE_TO_SELF, hideFrame.fromX,
+                Animation.RELATIVE_TO_SELF, hideFrame.toX,
+                Animation.RELATIVE_TO_SELF, hideFrame.fromY,
+                Animation.RELATIVE_TO_SELF, hideFrame.toY
         );
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -338,8 +409,15 @@ public class UINoticeViewBuilder {
             public void onAnimationRepeat(Animation animation) {
             }
         });
-        animation.setDuration(DURATION_OUT);
-        msgView.startAnimation(animation);
+
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1F, 0F);
+        AnimationSet set = new AnimationSet(true);
+        set.addAnimation(animation);
+        set.addAnimation(alphaAnimation);
+
+        set.setDuration(DURATION_OUT);
+        set.setFillAfter(true);
+        msgView.startAnimation(set);
     }
 
     public synchronized void hideWithoutAnimation() {
