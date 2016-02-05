@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -338,7 +339,7 @@ public class UINoticeViewBuilder {
         TranslateAnimation animation = new TranslateAnimation(
                 Animation.RELATIVE_TO_SELF, showFrame.fromX,
                 Animation.RELATIVE_TO_SELF, showFrame.toX,
-                Animation.RELATIVE_TO_SELF, showFrame.fromY,
+                Animation.RELATIVE_TO_PARENT, showFrame.fromY,
                 Animation.RELATIVE_TO_SELF, showFrame.toY
         );
         animation.setAnimationListener(new Animation.AnimationListener() {
@@ -362,11 +363,11 @@ public class UINoticeViewBuilder {
             public void onAnimationRepeat(Animation animation) {
             }
         });
-        AlphaAnimation alphaAnimation = new AlphaAnimation(0.5F, 1F);
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0F, 1F);
         AnimationSet set = new AnimationSet(true);
         set.addAnimation(animation);
         set.addAnimation(alphaAnimation);
-
+        set.setInterpolator(new DecelerateInterpolator(0.8f));
         set.setDuration(DURATION_IN);
         set.setFillAfter(true);
         msgView.startAnimation(set);
@@ -416,7 +417,6 @@ public class UINoticeViewBuilder {
         set.addAnimation(alphaAnimation);
 
         set.setDuration(DURATION_OUT);
-        set.setFillAfter(true);
         msgView.startAnimation(set);
     }
 

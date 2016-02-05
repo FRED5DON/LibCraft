@@ -208,9 +208,9 @@ public class PostManActivity extends BaseActivity implements FdHttp.HttpResponse
     public void onBackPressed() {
         if (layoutPostmanMask.getVisibility() == View.VISIBLE) {
             layoutPostmanMask.setVisibility(View.GONE);
-            return;
+        }else{
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 
     @OnItemSelected(R.id.sp_postman_method)
