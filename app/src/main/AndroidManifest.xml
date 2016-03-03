@@ -31,6 +31,9 @@
         <activity
             android:name=".activities.RxDemoActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.DialogsActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name=".AppWisperService" />
         <service android:name=".AppsService" />

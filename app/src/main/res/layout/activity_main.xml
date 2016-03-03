@@ -24,6 +24,18 @@
             android:orientation="vertical">
 
             <Button
+                android:id="@+id/button_dialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView"
+                android:layout_margin="5dp"
+                android:background="#333333"
+                android:padding="10dp"
+                android:text="自定义Dialog"
+                android:textColor="#ffffff"
+                android:textStyle="bold" />
+
+            <Button
                 android:id="@+id/button_toast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,7 +139,7 @@
                 android:layout_margin="5dp"
                 android:background="#47a1bf"
                 android:padding="10dp"
-                android:text="RxDemo"
+                android:text="RxjAVADemo"
                 android:textColor="#ffffff"
                 android:textStyle="bold" />
 

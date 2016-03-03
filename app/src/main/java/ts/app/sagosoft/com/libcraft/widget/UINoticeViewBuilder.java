@@ -1,4 +1,4 @@
-package ts.app.sagosoft.com.libcraft;
+package ts.app.sagosoft.com.libcraft.widget;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,6 +20,7 @@ import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import ts.app.sagosoft.com.libcraft.R;
 
 public class UINoticeViewBuilder {
 

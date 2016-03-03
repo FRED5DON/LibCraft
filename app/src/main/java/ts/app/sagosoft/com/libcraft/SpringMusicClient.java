@@ -1,15 +1,9 @@
 package ts.app.sagosoft.com.libcraft;
 
-import com.alibaba.fastjson.JSON;
-
-import java.util.List;
-
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.Body;
-import retrofit.http.GET;
 import retrofit.http.POST;
-import retrofit.http.Query;
 
 public class SpringMusicClient {
     private static final String API_URL = "http://www.freddon.com";

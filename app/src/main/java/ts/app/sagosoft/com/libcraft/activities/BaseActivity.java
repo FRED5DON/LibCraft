@@ -3,7 +3,7 @@ package ts.app.sagosoft.com.libcraft.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import ts.app.sagosoft.com.libcraft.UINoticeViewBuilder;
+import ts.app.sagosoft.com.libcraft.widget.UINoticeViewBuilder;
 
 /**
  * Created by FRED_angejia on 2016/1/21.

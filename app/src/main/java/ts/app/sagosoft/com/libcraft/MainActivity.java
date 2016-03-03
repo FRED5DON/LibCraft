@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import ts.app.sagosoft.com.libcraft.activities.BaseActivity;
+import ts.app.sagosoft.com.libcraft.activities.DialogsActivity;
 import ts.app.sagosoft.com.libcraft.activities.PostManActivity;
 import ts.app.sagosoft.com.libcraft.activities.RxDemoActivity;
 import ts.app.sagosoft.com.libcraft.db.AppInfoHelper;
@@ -40,15 +41,15 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-        String s="{\"type\":\"has_new_msg\",\"data\":{\"user_msg_flag\":1}}";
+        String s = "{\"type\":\"has_new_msg\",\"data\":{\"user_msg_flag\":1}}";
         try {
             byte[] b = s.getBytes("utf-8");
-            StringBuilder sb=new StringBuilder();
-            for (int i=0;i<b.length;i++){
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < b.length; i++) {
                 sb.append(",");
                 sb.append(b[i]);
             }
-            Log.i("MainActivity",sb.toString());
+            Log.i("MainActivity", sb.toString());
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -66,8 +67,6 @@ public class MainActivity extends BaseActivity {
         service.setClass(this, AppsService.class);
         stopService(service);
     }
-
-
 
 
     @Override
@@ -97,6 +96,10 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @OnClick(R.id.button_dialog)
+    public void onClickDialogEvent(View view) {
+        startActivity(DialogsActivity.mkIntent(this));
+    }
 
     @OnClick(R.id.button_toast)
     public void onClickToastEvent(View view) {
@@ -157,11 +160,11 @@ public class MainActivity extends BaseActivity {
             Dao.CreateOrUpdateStatus status = AppInfoHelper.getHelper(this).getAppInfoDao().createOrUpdate(item);//传入id则更新
             if (status.isCreated() || status.isUpdated()) {
                 showCustomToast("提示", String.format("数据 => %s 【%s】成功", String.valueOf(item), status.isCreated() ? "插入" : "更新"));
-            }else{
+            } else {
                 showCustomToast("提示", "数据操作失败");
             }
         } catch (SQLException e) {
-            showCustomToast("提示", "数据查询失败 "+e.getMessage());
+            showCustomToast("提示", "数据查询失败 " + e.getMessage());
         }
     }
 
@@ -172,7 +175,7 @@ public class MainActivity extends BaseActivity {
             List<AppInfo> list = AppInfoHelper.getHelper(this).getAppInfoDao().queryForAll();
             showCustomToast("提示", String.format("数据查询结果 => %s ", String.valueOf(list)));
         } catch (SQLException e) {
-            showCustomToast("提示", "数据查询失败 "+e.getMessage());
+            showCustomToast("提示", "数据查询失败 " + e.getMessage());
         }
     }
 
@@ -180,20 +183,21 @@ public class MainActivity extends BaseActivity {
     public void onClickClearDb(View view) {
         try {
             int status = AppInfoHelper.getHelper(this).getAppInfoDao().delete(AppInfoHelper.getHelper(this).getAppInfoDao().queryForAll());
-            showCustomToast("提示", String.format(" %d rows are affected ", status ));
+            showCustomToast("提示", String.format(" %d rows are affected ", status));
         } catch (SQLException e) {
-            showCustomToast("提示", "数据表清空失败 "+e.getMessage());
+            showCustomToast("提示", "数据表清空失败 " + e.getMessage());
         }
     }
+
     @OnClick(R.id.button_postman)
     public void onClickPostMan(View view) {
         startActivity(PostManActivity.mkIntent(this));
     }
+
     @OnClick(R.id.button_rxdemo)
     public void onClickRxDemo(View view) {
         startActivity(RxDemoActivity.mkIntent(this));
     }
-
 
 
     @Override
