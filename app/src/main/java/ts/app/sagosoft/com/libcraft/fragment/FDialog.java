@@ -1,11 +1,16 @@
-package ts.app.sagosoft.com.libcraft.widget;
+package ts.app.sagosoft.com.libcraft.fragment;
 
-import android.app.AlertDialog;
+
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,14 +19,21 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import ts.app.sagosoft.com.libcraft.R;
+import ts.app.sagosoft.com.libcraft.widget.UIDialog;
 
-public class UIDialog extends AlertDialog {
+/**
+ * Created by FRED_angejia on 2016/3/4.
+ */
+public class FDialog extends DialogFragment {
 
-
-    @InjectView(R.id.layout_content_view)
-    LinearLayout layoutContentView;
+    @InjectView(R.id.tv_content_body_title)
+    TextView tvContentBodyTitle;
+    @InjectView(R.id.tv_content_body_content)
+    TextView tvContentBodyContent;
     @InjectView(R.id.layout_content_body)
     LinearLayout layoutContentBody;
+    @InjectView(R.id.layout_content_view)
+    LinearLayout layoutContentView;
     @InjectView(R.id.tv_negativeText)
     TextView tvNegativeText;
     @InjectView(R.id.view_negativeText)
@@ -34,100 +46,98 @@ public class UIDialog extends AlertDialog {
     TextView tvPositiveText;
     @InjectView(R.id.view_positiveText)
     RelativeLayout viewPositiveText;
-    @InjectView(R.id.tv_content_body_title)
-    TextView tvContentBodyTitle;
-    @InjectView(R.id.tv_content_body_content)
-    TextView tvContentBodyContent;
     private Builder builder;
+    private UIDialog dialog;
+    private boolean viewTypeDefault;
 
-
-    private final static int DIALOG_HOZ_SPACING = 40;
-    /**
-     * 是默认还是用户自定义
-     */
-    private boolean viewTypeDefault = true;
-
-    /**
-     * 使用无Builder的构造方法 创建dialog等同 AlertDialog
-     *
-     * @param context
-     */
-    public UIDialog(Context context) {
-        super(context);
+    public FDialog() {
     }
 
-    public UIDialog(Builder builder) {
-        super(builder.context);
+    public FDialog initBuilder(Builder builder) {
         this.builder = builder;
+        return this;
     }
 
+    /*@NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        View loading = LayoutInflater.from(getActivity()).inflate(R.layout.view_loading_sample, null);
+        UIDialog.Builder builder = new UIDialog.Builder(getActivity()).setView(loading)
+                .cancelable(true).canceledOnTouchOutside(true);
+        dialog = builder.build();
+        return dialog;
+    }*/
 
     @Override
-    public void dismiss() {
-        super.dismiss();
+    public void onDestroy() {
+        super.onDestroy();
         if (viewTypeDefault) {
             ButterKnife.reset(this);
         }
     }
 
     @Override
-    public void show() {
-        super.show();
-        init();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
-    public void init() {
-        initCustom();
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        onDestroy();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = initCustom(inflater, container);
         renderData(builder);
-    }
+        if (builder != null) {
+            if(!builder.clearBack){
+                getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(0x50000000));
+            }else{
 
-    /**
-     * 获取默认的主体ViewParent id
-     */
-    public int getBodyView() {
-        if (viewTypeDefault) {
-            return R.id.layout_content_body;
-        } else {
-            return -1;
-        }
-    }
-
-
-    /**
-     * 替换默认的主体View
-     */
-    public UIDialog replaceBodyView(BodyAdapter bodyAdapter) {
-        if (viewTypeDefault && layoutContentView != null && bodyAdapter != null) {
-            layoutContentView.removeAllViews();
-            View v = bodyAdapter.getView();
-            if (v != null) {
-                v.setId(R.id.layout_content_body);
-                layoutContentView.addView(v);
-                if (bodyAdapter.titleTextViewId() != 0) {
-                    tvContentBodyTitle = (TextView) layoutContentView.findViewById(bodyAdapter.titleTextViewId());
-                }
-                if (bodyAdapter.contentTextViewId() != 0) {
-                    tvContentBodyContent = (TextView) layoutContentView.findViewById(bodyAdapter.contentTextViewId());
-                }
-                renderData(this.builder);
             }
-
         }
-        return this;
+        return rootView;
     }
 
-    public interface BodyAdapter {
-        View getView();
-
-        int titleTextViewId();
-
-        int contentTextViewId();
+    //如果需要自定义全部view
+    private View initCustom(LayoutInflater inflater, ViewGroup container) {
+        if (builder == null) return null;
+        viewTypeDefault = builder.view == null;
+        if (!viewTypeDefault) {
+            int count = 0;
+            if (builder.buttons != null) {
+                count = builder.buttons.length;
+            }
+            //设置按钮事件
+            for (int i = 0; i < count; i++) {
+                if (i == Builder.BUTTON_MAX_COUNT) {
+                    break;
+                }
+                View button = builder.buttons[i];
+                final int _count = count;
+                button.setTag(i);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setOnButtonsClick(v, _count);
+                    }
+                });
+            }
+        } else {
+            //默认view
+            View view = inflater.inflate(R.layout.layout_dialog_custom, container, false);
+            ButterKnife.inject(this, view);
+            View v = null;
+            builder.setView(view, v);
+        }
+        setCancelable(builder.cancelable);
+        return builder.view;
     }
 
-
-    /**
-     * ===============================  [private]   ======================================
-     */
 
     private void renderData(Builder builder) {
         if (viewTypeDefault && builder != null) {
@@ -170,46 +180,6 @@ public class UIDialog extends AlertDialog {
         }
     }
 
-    //如果需要自定义全部view
-    private void initCustom() {
-        if (builder == null) return;
-        viewTypeDefault = builder.view == null;
-        if (!viewTypeDefault) {
-            int count = 0;
-            if (builder.buttons != null) {
-                count = builder.buttons.length;
-            }
-            //设置按钮事件
-            for (int i = 0; i < count; i++) {
-                if (i == Builder.BUTTON_MAX_COUNT) {
-                    break;
-                }
-                View button = builder.buttons[i];
-                final int _count = count;
-                button.setTag(i);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        setOnButtonsClick(v, _count);
-                    }
-                });
-            }
-        } else {
-            //默认view
-            View view = LayoutInflater.from(builder.context).inflate(R.layout.layout_dialog_custom, null);
-            ButterKnife.inject(this, view);
-            View v = null;
-            builder.setView(view, v);
-        }
-        //如果需要使用setView方法 dialog布局边缘的border需要手动去掉 且在show之前调用
-        //使用getWindow().setContentView则须在super.show()之后调用
-        //fred @ 2016-03-01 19:31:02
-        getWindow().setContentView(builder.view);
-//        setView(builder.view,0,0,0,0);
-        setCancelable(builder.cancelable);
-        setCanceledOnTouchOutside(builder.canceledOnTouchOutside);
-    }
-
     //设置自定义底部button的点击事件
     private void setOnButtonsClick(View v, int _count) {
         if (v.getTag() != null && v.getTag() instanceof Integer && builder.buttonCallback != null) {
@@ -235,10 +205,6 @@ public class UIDialog extends AlertDialog {
             }
         }
     }
-
-    /**
-     * ===============================  [private]  END  ======================================
-     */
 
 
     /**
@@ -276,6 +242,17 @@ public class UIDialog extends AlertDialog {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
+
+    /**
+     * ************** ************** ************** ************** **************  UI Component Set && Event end
+     */
+
+
     /**
      * ************** ************** ************** ************** **************  UI Component Set && Event end
      */
@@ -299,6 +276,7 @@ public class UIDialog extends AlertDialog {
         protected boolean canceledOnTouchOutside = true;
         private boolean clearBackground;
         private boolean fullScreen;
+        private boolean clearBack;
 
         public Builder(@NonNull Context context) {
             this.context = context;
@@ -341,6 +319,11 @@ public class UIDialog extends AlertDialog {
             return this;
         }
 
+        public Builder clearBack(boolean b) {
+            this.clearBack = b;
+            return this;
+        }
+
         public Builder canceledOnTouchOutside(boolean b) {
             this.canceledOnTouchOutside = b;
             return this;
@@ -375,10 +358,9 @@ public class UIDialog extends AlertDialog {
             this.buttonCallback = buttonCallback;
         }
 
-        public UIDialog build() {
-            return new UIDialog(this);
+        public FDialog build() {
+            return new FDialog().initBuilder(this);
         }
-
 
         public Builder clearBackground(boolean b) {
             this.clearBackground = b;
@@ -396,13 +378,13 @@ public class UIDialog extends AlertDialog {
      */
     public static abstract class ButtonCallback {
 
-        public void onPositive(UIDialog dialog) {
+        public void onPositive(FDialog dialog) {
         }
 
-        public void onNegative(UIDialog dialog) {
+        public void onNegative(FDialog dialog) {
         }
 
-        public void onNeutral(UIDialog dialog) {
+        public void onNeutral(FDialog dialog) {
         }
 
         public ButtonCallback() {
@@ -434,5 +416,4 @@ public class UIDialog extends AlertDialog {
             return super.toString();
         }
     }
-
 }

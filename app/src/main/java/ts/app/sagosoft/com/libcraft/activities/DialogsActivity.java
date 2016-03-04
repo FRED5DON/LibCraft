@@ -10,6 +10,7 @@ import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ts.app.sagosoft.com.libcraft.R;
+import ts.app.sagosoft.com.libcraft.fragment.FDialog;
 import ts.app.sagosoft.com.libcraft.widget.UIDialog;
 
 /**
@@ -33,13 +34,13 @@ public class DialogsActivity extends BaseActivity {
 
 
     @OnClick(R.id.button_dialog_default)
-    private void showDefaultDialog() {
+    public void showDefaultDialog() {
         UIDialog.Builder builder = new UIDialog.Builder(this);
         String description = "请摆好姿势";
         builder.title("来自Fred的重要通知").content(Html.fromHtml(description))
                 .positiveText("知道了")
                 .negativeText("放弃").
-                cancelable(true).canceledOnTouchOutside(false)
+                cancelable(true)
                 .callback(new UIDialog.ButtonCallback() {
                     @Override
                     public void onPositive(UIDialog dialog) {
@@ -56,11 +57,41 @@ public class DialogsActivity extends BaseActivity {
     }
 
     @OnClick(R.id.button_dialog_custom)
-    private void showCustomDialog() {
+    public void showCustomDialog() {
         View loading = LayoutInflater.from(this).inflate(R.layout.view_loading_sample, null);
-        UIDialog.Builder builder = new UIDialog.Builder(this).setView(loading)
+        UIDialog.Builder builder = new UIDialog.Builder(this).setView(loading).fullScreen(true)
                 .cancelable(true).canceledOnTouchOutside(true);
         builder.build().show();
+    }
+
+    @OnClick(R.id.button_dialog_fragment)
+    public void showFragmentDialog() {
+        FDialog.Builder builder = new FDialog.Builder(this);
+        String description = "请摆好姿势";
+        builder.title("来自Fred的重要通知").content(Html.fromHtml(description))
+                .positiveText("知道了")
+                .negativeText("放弃")
+                .cancelable(true)
+                .callback(new FDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(FDialog dialog) {
+                        showCustomToast("UIDialog", "点击了FragmentDialog Positive");
+                    }
+
+                    @Override
+                    public void onNegative(FDialog dialog) {
+                        showCustomToast("UIDialog", "点击了FragmentDialog Negative");
+                    }
+                });
+        builder.build().show(getSupportFragmentManager(), "showFragmentDialog");
+    }
+
+    @OnClick(R.id.button_dialog_fragment_fullscreen)
+    public void showFragmentFullscreenDialog() {
+        View loading = LayoutInflater.from(this).inflate(R.layout.view_loading_sample, null);
+        FDialog.Builder builder = new FDialog.Builder(this).setView(loading)//.fullScreen(true)
+                .cancelable(true).clearBack(true);
+        builder.build().show(getSupportFragmentManager(), "showFragmentFullscreenDialog");
     }
 
 
