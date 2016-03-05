@@ -2,15 +2,19 @@ package ts.app.sagosoft.com.libcraft.fragment;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Spanned;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,12 +23,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import ts.app.sagosoft.com.libcraft.R;
-import ts.app.sagosoft.com.libcraft.widget.UIDialog;
 
 /**
  * Created by FRED_angejia on 2016/3/4.
  */
-public class FDialog extends DialogFragment {
+public class UIDialogFragment extends DialogFragment {
 
     @InjectView(R.id.tv_content_body_title)
     TextView tvContentBodyTitle;
@@ -47,13 +50,12 @@ public class FDialog extends DialogFragment {
     @InjectView(R.id.view_positiveText)
     RelativeLayout viewPositiveText;
     private Builder builder;
-    private UIDialog dialog;
     private boolean viewTypeDefault;
 
-    public FDialog() {
+    public UIDialogFragment() {
     }
 
-    public FDialog initBuilder(Builder builder) {
+    public UIDialogFragment initBuilder(Builder builder) {
         this.builder = builder;
         return this;
     }
@@ -70,11 +72,20 @@ public class FDialog extends DialogFragment {
     }*/
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         if (viewTypeDefault) {
             ButterKnife.reset(this);
         }
+        this.builder = null;
+//        System.gc();
+    }
+
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.add(this, tag);
+        ft.commitAllowingStateLoss();
     }
 
     @Override
@@ -83,25 +94,32 @@ public class FDialog extends DialogFragment {
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-        onDestroy();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = initCustom(inflater, container);
-        renderData(builder);
-        if (builder != null) {
-            if(!builder.clearBack){
-                getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(0x50000000));
-            }else{
-
+        if (this.builder != null) {
+            if (this.builder.fullScreen) {
+                setStyle(STYLE_NO_FRAME, android.R.style.Theme_Material_NoActionBar_Fullscreen);
+            } else {
+                getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+            }
+            if (this.builder.clearBack) {
+                getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             }
         }
+        View rootView = initCustom(inflater, container);
+        renderData(builder);
+        DisplayMetrics om = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(om);
+        if (this.builder != null && this.builder.view != null) {
+            final int margin = getActivity().getResources().getDimensionPixelSize(R.dimen.md_dialog_frame_margin);
+            this.builder.view.setMinimumWidth(om.widthPixels - margin);
+        }
+        /*View parent=(View)rootView.getParent();
+        int padding = getResources().getDimensionPixelSize(R.dimen.md_dialog_frame_margin);
+        parent.setPadding(padding,parent.getPaddingTop(),padding,parent.getPaddingBottom());*/
         return rootView;
     }
+
 
     //如果需要自定义全部view
     private View initCustom(LayoutInflater inflater, ViewGroup container) {
@@ -129,7 +147,7 @@ public class FDialog extends DialogFragment {
             }
         } else {
             //默认view
-            View view = inflater.inflate(R.layout.layout_dialog_custom, container, false);
+            View view = inflater.inflate(R.layout.layout_dialog_custom, container);
             ButterKnife.inject(this, view);
             View v = null;
             builder.setView(view, v);
@@ -154,25 +172,25 @@ public class FDialog extends DialogFragment {
             if (tvNeutralText != null) {
                 if (builder.neutralText != null) {
                     tvNeutralText.setText(builder.neutralText);
-                    tvNeutralText.setVisibility(View.VISIBLE);
+                    viewNeutralText.setVisibility(View.VISIBLE);
                 } else {
-                    tvNeutralText.setVisibility(View.GONE);
+                    viewNeutralText.setVisibility(View.GONE);
                 }
             }
             if (tvNegativeText != null) {
                 if (builder.negativeText != null) {
                     tvNegativeText.setText(builder.negativeText);
-                    tvNegativeText.setVisibility(View.VISIBLE);
+                    viewNegativeText.setVisibility(View.VISIBLE);
                 } else {
-                    tvNegativeText.setVisibility(View.GONE);
+                    viewNegativeText.setVisibility(View.GONE);
                 }
             }
             if (tvPositiveText != null) {
                 if (builder.positiveText != null) {
                     tvPositiveText.setText(builder.positiveText);
-                    tvPositiveText.setVisibility(View.VISIBLE);
+                    viewPositiveText.setVisibility(View.VISIBLE);
                 } else {
-                    tvPositiveText.setVisibility(View.GONE);
+                    viewPositiveText.setVisibility(View.GONE);
                 }
             }
 
@@ -242,11 +260,6 @@ public class FDialog extends DialogFragment {
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
-    }
 
     /**
      * ************** ************** ************** ************** **************  UI Component Set && Event end
@@ -276,7 +289,7 @@ public class FDialog extends DialogFragment {
         protected boolean canceledOnTouchOutside = true;
         private boolean clearBackground;
         private boolean fullScreen;
-        private boolean clearBack;
+        private boolean clearBack = true;
 
         public Builder(@NonNull Context context) {
             this.context = context;
@@ -358,8 +371,8 @@ public class FDialog extends DialogFragment {
             this.buttonCallback = buttonCallback;
         }
 
-        public FDialog build() {
-            return new FDialog().initBuilder(this);
+        public UIDialogFragment build() {
+            return new UIDialogFragment().initBuilder(this);
         }
 
         public Builder clearBackground(boolean b) {
@@ -378,13 +391,13 @@ public class FDialog extends DialogFragment {
      */
     public static abstract class ButtonCallback {
 
-        public void onPositive(FDialog dialog) {
+        public void onPositive(UIDialogFragment dialog) {
         }
 
-        public void onNegative(FDialog dialog) {
+        public void onNegative(UIDialogFragment dialog) {
         }
 
-        public void onNeutral(FDialog dialog) {
+        public void onNeutral(UIDialogFragment dialog) {
         }
 
         public ButtonCallback() {

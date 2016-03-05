@@ -41,7 +41,6 @@ public class UIDialog extends AlertDialog {
     private Builder builder;
 
 
-    private final static int DIALOG_HOZ_SPACING = 40;
     /**
      * 是默认还是用户自定义
      */
