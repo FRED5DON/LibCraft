@@ -10,6 +10,11 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        ndk {
+            moduleName "observer"
+            ldLibs "log"
+        }
     }
     buildTypes {
         release {
@@ -17,6 +22,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+//    sourceSets { main { jni.srcDirs = ['src/main/jni', 'src/main/jni/'] } }
 }
 
 dependencies {
@@ -28,7 +34,6 @@ dependencies {
 
     //*类似【EventBus项目】事件总线*//
     compile 'com.squareup:otto:1.3.8'
-
 
     //*Rxjava 类似【EventBus项目】的响应式编程框架，采用观察者设计模式，消息在订阅者、消费者之间传递过程中可使用操作符修改
     compile 'io.reactivex:rxjava:1.0.9'

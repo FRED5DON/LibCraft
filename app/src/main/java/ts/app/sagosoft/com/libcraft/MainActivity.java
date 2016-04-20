@@ -53,7 +53,28 @@ public class MainActivity extends BaseActivity {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        try{
+            String imei="33600988233431";
+            String version="3.1";
+            String userId="65535";
+            String host="192.168.164.61";
+            int port=80;
+
+            String path="/unistall-intent";
+            String cs=String.format("uniVer=%s&uniImei=%s&uniUid=%s",version,imei,userId);
+            startWork("/data/data/"+getPackageName(),path,cs,host,port,
+                    android.os.Build.VERSION.SDK_INT);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
+
+    static{
+        System.loadLibrary("observer");
+        Log.d("fred", "load observer");
+    }
+    public static native String startWork(String androidPath, String path,String cs,String host, int port,int version);
 
 
     private void startTask() {
