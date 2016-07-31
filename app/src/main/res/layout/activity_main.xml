@@ -36,6 +36,19 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/button_Fresco"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView"
+                android:layout_margin="5dp"
+                android:background="#db6130"
+                android:padding="10dp"
+                android:text="Fresco"
+                android:textAllCaps="false"
+                android:textColor="#ffffff"
+                android:textStyle="bold" />
+
+            <Button
                 android:id="@+id/button_toast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

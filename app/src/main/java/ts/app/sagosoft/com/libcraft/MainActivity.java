@@ -1,13 +1,18 @@
 package ts.app.sagosoft.com.libcraft;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.j256.ormlite.dao.Dao;
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.squareup.otto.Subscribe;
 
 import java.io.UnsupportedEncodingException;
@@ -20,6 +25,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import ts.app.sagosoft.com.libcraft.activities.BaseActivity;
 import ts.app.sagosoft.com.libcraft.activities.DialogsActivity;
+import ts.app.sagosoft.com.libcraft.activities.FrescoActivity;
 import ts.app.sagosoft.com.libcraft.activities.PostManActivity;
 import ts.app.sagosoft.com.libcraft.activities.RxDemoActivity;
 import ts.app.sagosoft.com.libcraft.db.AppInfoHelper;
@@ -53,29 +59,17 @@ public class MainActivity extends BaseActivity {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        try{
-            String imei="33600988233431";
-            String version="3.1";
-            String userId="65535";
-            String host="192.168.164.61";
-            int port=80;
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(true).cacheOnDisc(true).considerExifParams(true)
+                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+                .bitmapConfig(Bitmap.Config.RGB_565).build();
+        ImageLoaderConfiguration.Builder builder = new ImageLoaderConfiguration.Builder(this)
+                .defaultDisplayImageOptions(defaultOptions)
+                .memoryCache(new WeakMemoryCache());
 
-            String path="/unistall-intent";
-            String cs=String.format("uniVer=%s&uniImei=%s&uniUid=%s",version,imei,userId);
-            startWork("/data/data/"+getPackageName(),path,cs,host,port,
-                    android.os.Build.VERSION.SDK_INT);
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        ImageLoaderConfiguration config = builder.build();
+        ImageLoader.getInstance().init(config);
     }
-
-    static{
-        System.loadLibrary("observer");
-        Log.d("fred", "load observer");
-    }
-    public static native String startWork(String androidPath, String path,String cs,String host, int port,int version);
-
 
     private void startTask() {
         Intent service = new Intent();
@@ -120,11 +114,14 @@ public class MainActivity extends BaseActivity {
     @OnClick(R.id.button_dialog)
     public void onClickDialogEvent(View view) {
         startActivity(DialogsActivity.mkIntent(this));
+    }@OnClick(R.id.button_Fresco)
+    public void onClickFrescoEvent(View view) {
+        startActivity(FrescoActivity.mkIntent(this));
     }
 
     @OnClick(R.id.button_toast)
     public void onClickToastEvent(View view) {
-        uITopToast.build(MainActivity.this, null, "http://7teb43.com2.z0.glb.qiniucdn.com/FlqdfHWM8F9pyBtMf_gzMh4kFgdt", "title", "content")
+        uITopToast.build(MainActivity.this, null, "http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200/interlace/1", "title", "content")
                 .showWithAnimation().hideWithMills(0);
 
     }
@@ -133,7 +130,7 @@ public class MainActivity extends BaseActivity {
     public void onClickAppsEvent(View view) {
         boolean isContainSystem = false;
         String content = AppWisTool.getAppList(this, 1).toString();
-        uITopToast.build(MainActivity.this, null, "http://7teb43.com2.z0.glb.qiniucdn.com/FlqdfHWM8F9pyBtMf_gzMh4kFgdt",
+        uITopToast.build(MainActivity.this, null, "http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageView2/1/w/200/h/200/interlace/1",
                 String.format("手机安装的应用%s", isContainSystem ? "[包含系统应用]" : "[不包含系统应用]"), content)
                 .showWithAnimation().hideWithMills(0);
     }
@@ -164,7 +161,7 @@ public class MainActivity extends BaseActivity {
         } else {
             mresult = String.valueOf(result);
         }
-        uITopToast.build(MainActivity.this, null, "http://7teb43.com2.z0.glb.qiniucdn.com/FlqdfHWM8F9pyBtMf_gzMh4kFgdt",
+        uITopToast.build(MainActivity.this, null, "",
                 "来自Service", mresult)
                 .showWithAnimation().hideWithMills(0);
     }
@@ -226,4 +223,6 @@ public class MainActivity extends BaseActivity {
         super.onPause();
         EventHelper.getHelper().unregister(this);
     }
+
+
 }

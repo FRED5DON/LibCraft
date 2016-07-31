@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -91,22 +92,50 @@ public class UIDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (this.builder != null) {
+
             if (this.builder.fullScreen) {
-                setStyle(STYLE_NO_FRAME, android.R.style.Theme_Material_NoActionBar_Fullscreen);
+                getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+                Window win = getDialog().getWindow();
+                win.getDecorView().setPadding(0, 0, 0, 0);
+                WindowManager.LayoutParams lp = win.getAttributes();
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+                win.setAttributes(lp);
+//                setStyle(STYLE_NO_FRAME, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
             } else {
                 getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
             }
+
             if (this.builder.clearBack) {
                 getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             }
         }
+        RelativeLayout relayout = new RelativeLayout(getActivity());
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        relayout.setLayoutParams(params);
         View rootView = initCustom(inflater, container);
+        if (rootView != null) {
+            if (this.builder.fullScreen) {
+                RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                rootView.setLayoutParams(params2);
+                relayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dismissAllowingStateLoss();
+                    }
+                });
+            }
+            relayout.addView(rootView);
+        }
         renderData(builder);
         DisplayMetrics om = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(om);
@@ -117,7 +146,7 @@ public class UIDialogFragment extends DialogFragment {
         /*View parent=(View)rootView.getParent();
         int padding = getResources().getDimensionPixelSize(R.dimen.md_dialog_frame_margin);
         parent.setPadding(padding,parent.getPaddingTop(),padding,parent.getPaddingBottom());*/
-        return rootView;
+        return relayout;
     }
 
 

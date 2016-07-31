@@ -16,6 +16,8 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.Random;
 
 import butterknife.ButterKnife;
@@ -312,7 +314,7 @@ public class UINoticeViewBuilder {
             }
         });
         if (icon != null && icon.length() > 0) {
-//            ImageLoader.getInstance().displayImage(icon, childrenView.ivTopToastIcon);
+            ImageLoader.getInstance().displayImage(icon, childrenView.ivTopToastIcon);
         }
         if (title != null) {
             childrenView.tvTopToastTitle.setText(title);

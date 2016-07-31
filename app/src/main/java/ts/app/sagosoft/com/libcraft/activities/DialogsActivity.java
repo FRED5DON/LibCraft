@@ -90,7 +90,7 @@ public class DialogsActivity extends BaseActivity {
     public void showFragmentFullscreenDialog() {
         View loading = LayoutInflater.from(this).inflate(R.layout.view_loading_sample, null);
         UIDialogFragment.Builder builder = new UIDialogFragment.Builder(this).setView(loading)//.fullScreen(true)
-                .cancelable(true).clearBack(true);
+                .cancelable(true).clearBack(true).fullScreen(true);
         builder.build().show(getSupportFragmentManager(), "showFragmentFullscreenDialog");
     }
 
