@@ -2,6 +2,8 @@ package ts.app.sagosoft.com.libcraft.util;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -87,6 +89,7 @@ public class FdHttp {
         }
 
     }
+
 
 
     public interface HttpResponse {

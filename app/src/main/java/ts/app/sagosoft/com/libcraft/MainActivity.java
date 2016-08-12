@@ -23,9 +23,11 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import ts.app.sagosoft.com.libcraft.activities.AnimatorActivity;
 import ts.app.sagosoft.com.libcraft.activities.BaseActivity;
 import ts.app.sagosoft.com.libcraft.activities.DialogsActivity;
 import ts.app.sagosoft.com.libcraft.activities.FrescoActivity;
+import ts.app.sagosoft.com.libcraft.activities.ImageLoaderActivity;
 import ts.app.sagosoft.com.libcraft.activities.PostManActivity;
 import ts.app.sagosoft.com.libcraft.activities.RxDemoActivity;
 import ts.app.sagosoft.com.libcraft.db.AppInfoHelper;
@@ -59,16 +61,6 @@ public class MainActivity extends BaseActivity {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true).cacheOnDisc(true).considerExifParams(true)
-                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
-                .bitmapConfig(Bitmap.Config.RGB_565).build();
-        ImageLoaderConfiguration.Builder builder = new ImageLoaderConfiguration.Builder(this)
-                .defaultDisplayImageOptions(defaultOptions)
-                .memoryCache(new WeakMemoryCache());
-
-        ImageLoaderConfiguration config = builder.build();
-        ImageLoader.getInstance().init(config);
     }
 
     private void startTask() {
@@ -111,10 +103,21 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.button_dialog)
+    @OnClick(R.id.button_imageLoader)
+    public void onClickImageLoaderEvent(View view) {
+        startActivity(ImageLoaderActivity.mkIntent(this,0));
+    }
+
+    @OnClick(R.id.button_animator)
+    public void onClickAnimatorActivityEvent(View view) {
+        startActivity(AnimatorActivity.mkIntent(this));
+    }
+@OnClick(R.id.button_dialog)
     public void onClickDialogEvent(View view) {
         startActivity(DialogsActivity.mkIntent(this));
-    }@OnClick(R.id.button_Fresco)
+    }
+
+    @OnClick(R.id.button_Fresco)
     public void onClickFrescoEvent(View view) {
         startActivity(FrescoActivity.mkIntent(this));
     }

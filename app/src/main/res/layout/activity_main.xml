@@ -49,6 +49,32 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/button_imageLoader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView"
+                android:layout_margin="5dp"
+                android:background="#33c3e7"
+                android:padding="10dp"
+                android:text="ImageLoader(UIL)"
+                android:textAllCaps="false"
+                android:textColor="#ffffff"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/button_animator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView"
+                android:layout_margin="5dp"
+                android:background="#b0639f5b"
+                android:padding="10dp"
+                android:text="Animator"
+                android:textAllCaps="false"
+                android:textColor="#ffffff"
+                android:textStyle="bold" />
+
+            <Button
                 android:id="@+id/button_toast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -8,6 +8,16 @@ public class HttpProperty {
     private int responseCode;
     private String responseBody;
 
+    public byte[] getByteData() {
+        return byteData;
+    }
+
+    public void setByteData(byte[] byteData) {
+        this.byteData = byteData;
+    }
+
+    private byte[] byteData;
+
 
     private String responseCookie;
 
