@@ -1,18 +1,12 @@
 package ts.app.sagosoft.com.libcraft;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.j256.ormlite.dao.Dao;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.squareup.otto.Subscribe;
 
 import java.io.UnsupportedEncodingException;
@@ -29,6 +23,7 @@ import ts.app.sagosoft.com.libcraft.activities.DialogsActivity;
 import ts.app.sagosoft.com.libcraft.activities.FrescoActivity;
 import ts.app.sagosoft.com.libcraft.activities.ImageLoaderActivity;
 import ts.app.sagosoft.com.libcraft.activities.PostManActivity;
+import ts.app.sagosoft.com.libcraft.activities.ScrollViewsActivity;
 import ts.app.sagosoft.com.libcraft.activities.RxDemoActivity;
 import ts.app.sagosoft.com.libcraft.db.AppInfoHelper;
 import ts.app.sagosoft.com.libcraft.model.AppInfo;
@@ -105,14 +100,15 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.button_imageLoader)
     public void onClickImageLoaderEvent(View view) {
-        startActivity(ImageLoaderActivity.mkIntent(this,0));
+        startActivity(ImageLoaderActivity.mkIntent(this, 0));
     }
 
     @OnClick(R.id.button_animator)
     public void onClickAnimatorActivityEvent(View view) {
         startActivity(AnimatorActivity.mkIntent(this));
     }
-@OnClick(R.id.button_dialog)
+
+    @OnClick(R.id.button_dialog)
     public void onClickDialogEvent(View view) {
         startActivity(DialogsActivity.mkIntent(this));
     }
@@ -120,6 +116,11 @@ public class MainActivity extends BaseActivity {
     @OnClick(R.id.button_Fresco)
     public void onClickFrescoEvent(View view) {
         startActivity(FrescoActivity.mkIntent(this));
+    }
+
+    @OnClick(R.id.button_scrollview)
+    public void onClickRecycleEvent(View view) {
+        startActivity(ScrollViewsActivity.mkIntent(this));
     }
 
     @OnClick(R.id.button_toast)

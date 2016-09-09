@@ -27,7 +27,6 @@
                 android:id="@+id/button_dialog"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView"
                 android:layout_margin="5dp"
                 android:background="#333333"
                 android:padding="10dp"
@@ -39,7 +38,6 @@
                 android:id="@+id/button_Fresco"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView"
                 android:layout_margin="5dp"
                 android:background="#db6130"
                 android:padding="10dp"
@@ -52,7 +50,6 @@
                 android:id="@+id/button_imageLoader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView"
                 android:layout_margin="5dp"
                 android:background="#33c3e7"
                 android:padding="10dp"
@@ -61,6 +58,17 @@
                 android:textColor="#ffffff"
                 android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/button_scrollview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="#3aa3e7"
+                android:padding="10dp"
+                android:text="翻滚吧！View"
+                android:textAllCaps="false"
+                android:textColor="#ffffff"
+                android:textStyle="bold" />
             <Button
                 android:id="@+id/button_animator"
                 android:layout_width="match_parent"

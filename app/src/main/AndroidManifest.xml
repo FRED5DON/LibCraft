@@ -46,6 +46,23 @@
         <activity
             android:name=".activities.FrescoActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.ScrollViewsActivity"
+            android:label="ScrollViews"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.scroll.ScrollersActivity"
+            android:label="Scrollers"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.motion.MotionEventActivity"
+            android:label="MotionEventActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.scroll.ScrollerLayoutActivity"
+            android:label="ScrollerLayout"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.ImageLoaderActivity"
             android:screenOrientation="portrait" />

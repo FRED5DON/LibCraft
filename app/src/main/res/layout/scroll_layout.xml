@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <ts.app.sagosoft.com.libcraft.widget.scroller.UIScrollLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:childStickyResId="@+id/button_sticky"
+        >
+
+        <Button
+            android:id="@+id/topView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_below="@+id/topView"
+            android:id="@+id/button_sticky"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#ff4400"
+            />
+
+        <TextView
+            android:id="@+id/tv_main"
+            android:layout_below="@+id/button_sticky"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            >
+
+        </TextView>
+
+    </ts.app.sagosoft.com.libcraft.widget.scroller.UIScrollLayout>
+</LinearLayout>
